@@ -25,6 +25,7 @@
     dispatch_once( &__singletonToken, ^{
         __singleton__ = [[self alloc] init];
         [__singleton__ configSongsFolder];
+        [__singleton__ updateMediaItemsLibrary];
         [__singleton__ updateLocalSongsLibrary];
     } );
     return __singleton__;
@@ -90,39 +91,32 @@
     NSString *exportAbsolutePath = [NSString stringWithFormat:@"/%@%@",[aMediaItem valueForProperty:MPMediaItemPropertyTitle],ITLocalSongsFileFormat];
     NSString *exportPath = [ITLocalSongsFolderPath stringByAppendingPathComponent:exportAbsolutePath];
     if([[NSFileManager defaultManager] fileExistsAtPath:exportPath]) {
-        [[NSFileManager defaultManager] removeItemAtPath:exportPath error:nil];
+        [self convertProgressChange];
+        return;
     }
     NSURL *exportURL = [NSURL fileURLWithPath:exportPath];
     exporter.outputURL = exportURL;
     [exporter exportAsynchronouslyWithCompletionHandler:^{
         switch (exporter.status) {
-            case AVAssetExportSessionStatusFailed: {
-                NSError *exportError = exporter.error;
-                NSLog (@"AVAssetExportSessionStatusFailed:%@",exportError);
-                break;
-            }
             case AVAssetExportSessionStatusCompleted: {
                 NSLog (@"AVAssetExportSessionStatusCompleted");
                 [self addSingleLocalSong:[ITSingleSong songWithMPMediaItem:aMediaItem localAbsolutePath:exportAbsolutePath]];
                 break;
             }
-            case AVAssetExportSessionStatusUnknown: {
-                NSLog (@"AVAssetExportSessionStatusUnknown");
-                break;
-            }
-            case AVAssetExportSessionStatusExporting: {
-                NSLog (@"AVAssetExportSessionStatusExporting");
-                break;
-            }
-            case AVAssetExportSessionStatusCancelled: {
-                NSLog (@"AVAssetExportSessionStatusCancelled");
-                break;
-            }
+            case AVAssetExportSessionStatusUnknown:
+            case AVAssetExportSessionStatusFailed:
+            case AVAssetExportSessionStatusExporting:
+            case AVAssetExportSessionStatusCancelled:
             case AVAssetExportSessionStatusWaiting: {
-                NSLog (@"AVAssetExportSessionStatusWaiting");
+                if([[NSFileManager defaultManager] fileExistsAtPath:exportPath]) {
+                    [[NSFileManager defaultManager] removeItemAtPath:exportPath error:nil];
+                }
                 break;
             }
             default: {
+                if([[NSFileManager defaultManager] fileExistsAtPath:exportPath]) {
+                    [[NSFileManager defaultManager] removeItemAtPath:exportPath error:nil];
+                }
                 NSLog (@"didn't get export status");
                 break;
             }
@@ -150,8 +144,10 @@
 }
 
 - (void)removeSelectedLocalSongs:(NSMutableArray<ITSingleSong *> *)selectedSongsArr {
-    for (ITSingleSong *aSong in selectedSongsArr) {
-        [self removeSingleLocalSong:aSong];
+    if (selectedSongsArr && selectedSongsArr.count != 0) {
+        for (ITSingleSong *aSong in selectedSongsArr) {
+            [self removeSingleLocalSong:aSong];
+        }
     }
 }
 
