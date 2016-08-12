@@ -15,9 +15,7 @@
 #define ITDocumentPath [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 #define ITLocalSongsFolderPath [ITDocumentPath stringByAppendingPathComponent:[NSString stringWithFormat:@"/LocalSongs"]]
 #define ITLocalSongsLibraryPath [ITLocalSongsFolderPath stringByAppendingPathComponent:[NSString stringWithFormat:@"LocalSongsLibrary.plist"]]
-#define ITLocalSongsUpperLimit 5
 #define ITMusicNoticeConvertProgressChange @"ITMusicConvertProgressChange"
-#define ITMusicNoticeConvertCountOverLimit @"ITMusicConvertCountOverLimit"
 
 @interface ITMusicLibraryManager : NSObject
 

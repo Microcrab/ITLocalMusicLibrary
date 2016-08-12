@@ -44,9 +44,9 @@
 - (NSArray<MPMediaItem *> *)updateMediaItemsLibrary {
     NSArray *itemsFromGenericQuery = [[MPMediaQuery songsQuery] items];
     if (itemsFromGenericQuery && itemsFromGenericQuery.count != 0) {
-        for (int i =0 ; i < [itemsFromGenericQuery count]; i++) {
-            if (i < ITLocalSongsUpperLimit) {
-                [self.ipodMediaItemsArr addObject:[itemsFromGenericQuery objectAtIndex:i]];
+        for (MPMediaItem *aItem in itemsFromGenericQuery) {
+            if ([aItem valueForKey:MPMediaItemPropertyAssetURL]) {
+                [self.ipodMediaItemsArr addObject:aItem];
             }
         }
     }
@@ -65,18 +65,8 @@
     if (selectedItemsArr && selectedItemsArr.count != 0) {
         self.currentConvertFileNum = 1;
         self.convertFileCount = selectedItemsArr.count;
-        if (self.localSongsArr.count < ITLocalSongsUpperLimit) {
-            if (self.localSongsArr.count + selectedItemsArr.count <= ITLocalSongsUpperLimit) {
-                for (MPMediaItem *aMediaItem in selectedItemsArr) {
-                    [self convertToM4A:aMediaItem];
-                }
-            } else {
-                for (int i = 0; i < ITLocalSongsUpperLimit - self.localSongsArr.count; i++) {
-                    [self convertToM4A:selectedItemsArr[i + self.localSongsArr.count]];
-                }
-            }
-        } else {
-            [[NSNotificationCenter defaultCenter]postNotificationName:ITMusicNoticeConvertCountOverLimit object:nil];
+        for (MPMediaItem *aMediaItem in selectedItemsArr) {
+            [self convertToM4A:aMediaItem];
         }
     }
 }
@@ -180,7 +170,7 @@
 
 - (NSMutableArray<ITSingleSong *> *)localSongsArr {
     if (_localSongsArr == nil) {
-        _localSongsArr = [[NSMutableArray alloc]initWithCapacity:ITLocalSongsUpperLimit];
+        _localSongsArr = [[NSMutableArray alloc]init];
     }
     return _localSongsArr;
 }
