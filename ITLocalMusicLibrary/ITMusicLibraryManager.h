@@ -48,7 +48,10 @@
  *  将所有的ipod文件转化本地音乐文件
  */
 - (void)convertAllIpodItems;
-
+/**
+ *  添加单个本地音乐文件
+ */
+- (void)addSingleLocalSong:(ITSingleSong *)aSong;
 /**
  *  删除单个本地音乐文件
  */
