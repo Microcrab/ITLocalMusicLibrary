@@ -32,12 +32,12 @@
 /**
  *  更新ipod songs library
  */
-- (NSArray<MPMediaItem *> *)updateMediaItemsLibrary;
+- (void)updateMediaItemsLibrary;
 
 /**
  *  更新本地音乐库
  */
-- (NSMutableArray<ITSingleSong *> *)updateLocalSongsLibrary;
+- (void)updateLocalSongsLibrary;
 
 /**
  *  将选中的ipod文件转化为本地音乐文件

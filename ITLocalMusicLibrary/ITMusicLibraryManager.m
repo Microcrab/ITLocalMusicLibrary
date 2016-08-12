@@ -41,7 +41,8 @@
     }
 }
 
-- (NSArray<MPMediaItem *> *)updateMediaItemsLibrary {
+- (void)updateMediaItemsLibrary {
+    [self.ipodMediaItemsArr removeAllObjects];
     NSArray *itemsFromGenericQuery = [[MPMediaQuery songsQuery] items];
     if (itemsFromGenericQuery && itemsFromGenericQuery.count != 0) {
         for (MPMediaItem *aItem in itemsFromGenericQuery) {
@@ -50,15 +51,13 @@
             }
         }
     }
-//    [self.ipodMediaItemsArr setArray:itemsFromGenericQuery];
-    return self.ipodMediaItemsArr;
 }
 
-- (NSMutableArray<ITSingleSong *> *)updateLocalSongsLibrary {
+- (void)updateLocalSongsLibrary {
+    [self.localSongsArr removeAllObjects];
     NSArray<ITSingleSong *> *localSongsArr = [NSKeyedUnarchiver unarchiveObjectWithFile:ITLocalSongsLibraryPath];
     [self.localSongsArr setArray:localSongsArr];
     [NSKeyedArchiver archiveRootObject:self.localSongsArr toFile:ITLocalSongsLibraryPath];
-    return self.localSongsArr;
 }
 
 - (void)convertSelectedIpodItems:(NSArray<MPMediaItem *> *)selectedItemsArr {
@@ -72,7 +71,7 @@
 }
 
 - (void)convertAllIpodItems {
-    [self convertSelectedIpodItems:[self updateMediaItemsLibrary]];
+    [self convertSelectedIpodItems:self.ipodMediaItemsArr];
 }
 
 - (void)convertToM4A:(MPMediaItem *)aMediaItem {
