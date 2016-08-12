@@ -18,7 +18,20 @@
     aSong.fileFormat = ITLocalSongsFileFormat;
     aSong.duration = [mediaItem valueForProperty:MPMediaItemPropertyPlaybackDuration];
     aSong.lyrics = [mediaItem valueForProperty:MPMediaItemPropertyLyrics];
-    aSong.artworkImage = [[mediaItem valueForProperty:MPMediaItemPropertyArtwork] imageWithSize:CGSizeMake(100, 100)];
+    aSong.artworkImage = [[mediaItem valueForProperty:MPMediaItemPropertyArtwork] imageWithSize:ITSingleSongArtworkImageSize];
+    aSong.localAbsolutePath = localAbsolutePath;
+    aSong.playing = NO;
+    return aSong;
+}
+
++ (instancetype)songWithName:(NSString *)name duration:(NSNumber *)duration localAbsolutePath:(NSString *)localAbsolutePath {
+    ITSingleSong *aSong = [[ITSingleSong alloc]init];
+    aSong.persistentID = nil;
+    aSong.name = [[name componentsSeparatedByString:@"."] objectAtIndex:0];
+    aSong.fileFormat = [NSString stringWithFormat:@".%@",[[name componentsSeparatedByString:@"."] objectAtIndex:1]];
+    aSong.duration = duration;
+    aSong.lyrics = nil;
+    aSong.artworkImage = nil;
     aSong.localAbsolutePath = localAbsolutePath;
     aSong.playing = NO;
     return aSong;

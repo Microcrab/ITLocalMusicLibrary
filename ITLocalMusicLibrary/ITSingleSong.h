@@ -11,6 +11,7 @@
 @class MPMediaItemArtwork;
 
 #define ITLocalSongsFileFormat @".m4a"
+#define ITSingleSongArtworkImageSize CGSizeMake(1000, 1000)
 
 @interface ITSingleSong : NSObject <NSCoding>
 
@@ -45,10 +46,12 @@
 /**
  *  是否正在播放
  */
-@property (nonatomic, assign) BOOL playing;
+@property (nonatomic, assign, getter=isPlaying) BOOL playing;
 
 
 + (instancetype)songWithMPMediaItem:(MPMediaItem *)mediaItem localAbsolutePath:(NSString *)localAbsolutePath;
+
++ (instancetype)songWithName:(NSString *)name duration:(NSNumber *)duration localAbsolutePath:(NSString *)localAbsolutePath;
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder;
 
